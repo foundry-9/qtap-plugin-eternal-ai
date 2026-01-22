@@ -3,7 +3,7 @@
   "name": "@quilltap/qtap-plugin-eternal-ai",
   "title": "Eternal AI",
   "description": "Integration with Eternal AI for advanced image generation with character consistency and style control",
-  "version": "1.0.3",
+  "version": "1.0.9",
   "author": {
     "name": "Foundry-9 LLC",
     "email": "charles.sebold@foundry-9.com"

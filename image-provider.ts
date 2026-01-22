@@ -20,7 +20,9 @@ interface EternalAIPollResponse {
   request_id: string;
   status: 'done' | 'processing' | 'failed';
   result_url?: string;
+  result_image_url?: string;
   prompt?: string;
+  magic_prompt?: string;
   model?: string;
   queue_info?: {
     position: number;
@@ -54,17 +56,44 @@ export class EternalAIImageProvider implements ImageGenProvider {
       loraConfig
     );
 
+    console.log('[EternalAI] Generation response:', JSON.stringify(generationResponse));
+
     // Poll for the result
     const result = await this.pollForResult(
       generationResponse.request_id,
       apiKey
     );
 
+    console.log('[EternalAI] Poll result:', JSON.stringify(result));
+
+    // Fetch the image from URL and convert to base64
+    const imageUrl = result.result_url || result.result_image_url;
+    if (!imageUrl) {
+      throw new Error('No image URL in result');
+    }
+
+    console.log('[EternalAI] Fetching image from:', imageUrl);
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      throw new Error(`Failed to fetch image: ${imageResponse.status}`);
+    }
+
+    const arrayBuffer = await imageResponse.arrayBuffer();
+    const base64Data = Buffer.from(arrayBuffer).toString('base64');
+
+    // Detect mime type from URL or default to png
+    const mimeType = imageUrl.endsWith('.jpg') || imageUrl.endsWith('.jpeg')
+      ? 'image/jpeg'
+      : 'image/png';
+
+    console.log('[EternalAI] Image fetched, size:', arrayBuffer.byteLength, 'bytes');
+
     return {
       images: [
         {
-          url: result.result_url,
-          revisedPrompt: result.prompt,
+          data: base64Data,
+          mimeType,
+          revisedPrompt: result.magic_prompt || result.prompt,
         },
       ],
       raw: result,
@@ -80,7 +109,10 @@ export class EternalAIImageProvider implements ImageGenProvider {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: [{ role: 'user', content: 'test' }],
+          messages: [{
+            role: 'user',
+            content: [{ type: 'text', text: 'test' }]
+          }],
           type: 'new',
         }),
       });
@@ -109,7 +141,10 @@ export class EternalAIImageProvider implements ImageGenProvider {
     loraConfig: Record<string, number>
   ): Promise<EternalAIGenerationResponse> {
     const requestBody: Record<string, unknown> = {
-      messages: [{ role: 'user', content: prompt }],
+      messages: [{
+        role: 'user',
+        content: [{ type: 'text', text: prompt }]
+      }],
       type: 'new',
     };
 
@@ -150,23 +185,36 @@ export class EternalAIImageProvider implements ImageGenProvider {
       await this.sleep(POLL_INTERVAL_MS);
       attempts++;
 
-      const response = await fetch(POLLING_ENDPOINT, {
+      const pollUrl = `${POLLING_ENDPOINT}?request_id=${requestId}`;
+      console.log('[EternalAI] Polling URL:', pollUrl);
+
+      const response = await fetch(pollUrl, {
         method: 'GET',
         headers: {
           'x-api-key': apiKey,
+          'accept': 'application/json',
         },
       });
 
+      console.log('[EternalAI] Poll response status:', response.status);
+
       if (!response.ok) {
-        throw new Error(`Polling failed: ${response.status}`);
+        const errorBody = await response.text();
+        console.log('[EternalAI] Poll error body:', errorBody);
+        throw new Error(`Polling failed: ${response.status} - ${errorBody}`);
       }
 
       const result: EternalAIPollResponse = await response.json();
+      console.log('[EternalAI] Poll result:', JSON.stringify(result));
 
       if (result.status === 'done') {
-        if (!result.result_url) {
+        // API may return result_url, result_image_url, or both
+        const imageUrl = result.result_url || result.result_image_url;
+        if (!imageUrl) {
           throw new Error('Generation completed but no result URL provided');
         }
+        // Normalize to result_url for consistent return
+        result.result_url = imageUrl;
         return result;
       }
 
