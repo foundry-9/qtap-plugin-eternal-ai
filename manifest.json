@@ -1,12 +1,12 @@
 {
-  "$schema": "https://quilltap.io/schemas/plugin-manifest.json",
+  "$schema": "https://raw.githubusercontent.com/foundry-9/quilltap/refs/heads/main/plugins/dist/qtap-plugin-template/schemas/plugin-manifest.schema.json",
   "name": "@quilltap/qtap-plugin-eternal-ai",
   "title": "Eternal AI",
   "description": "Integration with Eternal AI for advanced image generation with character consistency and style control",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": {
-    "name": "Quilltap Community",
-    "email": "plugins@quilltap.io"
+    "name": "Foundry-9 LLC",
+    "email": "charles.sebold@foundry-9.com"
   },
   "license": "MIT",
   "main": "dist/index.js",

@@ -80,7 +80,7 @@ export class EternalAIImageProvider implements ImageGenProvider {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: [{ content: 'test' }],
+          messages: [{ role: 'user', content: 'test' }],
           type: 'new',
         }),
       });
@@ -109,7 +109,7 @@ export class EternalAIImageProvider implements ImageGenProvider {
     loraConfig: Record<string, number>
   ): Promise<EternalAIGenerationResponse> {
     const requestBody: Record<string, unknown> = {
-      messages: [{ content: prompt }],
+      messages: [{ role: 'user', content: prompt }],
       type: 'new',
     };
 
