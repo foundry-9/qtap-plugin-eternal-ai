@@ -1,6 +1,6 @@
 {
   "name": "@quilltap/qtap-plugin-eternal-ai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Eternal AI image generation provider plugin for Quilltap",
   "main": "dist/index.js",
   "license": "MIT",
@@ -14,7 +14,8 @@
     "ai-art"
   ],
   "files": [
-    "dist"
+    "dist",
+    "manifest.json"
   ],
   "publishConfig": {
     "access": "public"
