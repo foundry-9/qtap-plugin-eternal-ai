@@ -6,6 +6,7 @@ esbuild.build({
   bundle: true,
   platform: 'browser',
   target: 'es2020',
+  format: 'cjs',
   sourcemap: true,
   external: ['react', '@quilltap/plugin-types', '@quilltap/plugin-utils'],
   logLevel: 'info',
