@@ -3,11 +3,25 @@
   "version": "1.0.0",
   "description": "Eternal AI image generation provider plugin for Quilltap",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "license": "MIT",
+  "author": "Foundry-9 LLC and Charles Sebold",
+  "keywords": [
+    "quilltap",
+    "plugin",
+    "eternal-ai",
+    "image-generation",
+    "flux",
+    "ai-art"
+  ],
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/foundry-9/quilltap-plugins/tree/main/plugins/eternal-ai"
+    "url": "https://github.com/foundry-9/qtap-plugin-eternal-ai"
   },
   "peerDependencies": {
     "react": "^19.0.0",
@@ -28,6 +42,7 @@
     "esbuild": "^0.24.0"
   },
   "scripts": {
-    "build": "esbuild index.ts --bundle --platform=browser --outfile=dist/index.js --external:react --external:react/jsx-runtime"
+    "build": "esbuild index.ts --bundle --platform=browser --outfile=dist/index.js --external:react --external:react/jsx-runtime",
+    "prepublishOnly": "npm run build"
   }
 }
