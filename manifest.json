@@ -1,0 +1,49 @@
+{
+  "$schema": "https://quilltap.io/schemas/plugin-manifest.json",
+  "name": "@quilltap/qtap-plugin-eternal-ai",
+  "title": "Eternal AI",
+  "description": "Integration with Eternal AI for advanced image generation with character consistency and style control",
+  "version": "1.0.0",
+  "author": {
+    "name": "Quilltap Community",
+    "email": "plugins@quilltap.io"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "compatibility": {
+    "quilltapVersion": ">=1.7.0"
+  },
+  "capabilities": ["LLM_PROVIDER"],
+  "category": "PROVIDER",
+  "typescript": true,
+  "enabledByDefault": true,
+  "status": "STABLE",
+  "providerConfig": {
+    "providerName": "ETERNAL_AI",
+    "displayName": "Eternal AI",
+    "description": "Text-to-image generation with advanced style control and character consistency",
+    "abbreviation": "EAI",
+    "colors": {
+      "bg": "bg-purple-100",
+      "text": "text-purple-900",
+      "icon": "text-purple-600"
+    },
+    "requiresApiKey": true,
+    "requiresBaseUrl": false,
+    "apiKeyLabel": "Eternal AI API Key",
+    "capabilities": {
+      "chat": false,
+      "imageGeneration": true,
+      "embeddings": false,
+      "webSearch": false
+    },
+    "attachmentSupport": {
+      "supported": false,
+      "mimeTypes": [],
+      "description": "No file attachments supported"
+    }
+  },
+  "permissions": {
+    "network": ["open.eternalai.org"]
+  }
+}
