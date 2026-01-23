@@ -207,24 +207,32 @@ export class EternalAIImageProvider implements ImageGenProvider {
       const result: EternalAIPollResponse = await response.json();
       console.log('[EternalAI] Poll result:', JSON.stringify(result));
 
-      if (result.status === 'done') {
-        // API may return result_url, result_image_url, or both
-        const imageUrl = result.result_url || result.result_image_url;
-        if (!imageUrl) {
-          throw new Error('Generation completed but no result URL provided');
-        }
-        // Normalize to result_url for consistent return
+      // Check for completion - handle various status formats the API might return
+      const status = (result.status || '').toLowerCase();
+      const imageUrl = result.result_url || result.result_image_url;
+
+      // If we have an image URL, we're done regardless of status field
+      if (imageUrl) {
+        console.log('[EternalAI] Image URL found, generation complete');
         result.result_url = imageUrl;
         return result;
       }
 
-      if (result.status === 'failed') {
+      if (status === 'done' || status === 'completed' || status === 'success') {
+        // Completed but no URL - this shouldn't happen
+        throw new Error('Generation completed but no result URL provided');
+      }
+
+      if (status === 'failed' || status === 'error') {
         throw new Error(
           `Image generation failed: ${result.error || 'Unknown error'}`
         );
       }
 
-      // Status is 'processing', continue polling
+      // Status is 'processing', 'pending', 'queued', etc. - continue polling
+      if (result.queue_info) {
+        console.log('[EternalAI] Queue position:', result.queue_info.position, 'Wait time:', result.queue_info.wait_time);
+      }
     }
 
     throw new Error('Image generation timed out after 10 minutes');
