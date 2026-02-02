@@ -240,13 +240,27 @@ export class EternalAIImageProvider implements ImageGenProvider {
 
   private normalizeStyle(style: string): string {
     // Map common style names to Eternal AI LoRA identifiers
+    // These must match the exact identifiers from the Eternal AI API
     const styleMap: Record<string, string> = {
+      // Impressionist style
       impressionist: 'Art_style_Impressionist',
       impressionism: 'Art_style_Impressionist',
-      painterly: 'Daubrez_Painterly',
-      anime: 'Anime_Art',
-      mechanical: 'Mechanical_Bloom',
-      random: 'RandomMaxx_Artistify',
+
+      // Daubrez Painterly style - use "DB4RZ Daubrez style" in prompt
+      painterly: 'FLUX-daubrez-DB4RZ',
+      daubrez: 'FLUX-daubrez-DB4RZ',
+
+      // Psycho Art anime style - use "Psycho_4rt" trigger in prompt
+      anime: 'psycho_art',
+      psycho_art: 'psycho_art',
+
+      // Mechanical Bloom style - use "CynthiaPortrait:" trigger in prompt
+      mechanical: 'Flux_1_MechanicalBloom',
+      mechanical_bloom: 'Flux_1_MechanicalBloom',
+
+      // RandomMaxx Artistify style
+      random: 'RM_Artistify_v1_0M',
+      artistify: 'RM_Artistify_v1_0M',
     };
 
     const normalized = style.toLowerCase().replace(/\s+/g, '_');

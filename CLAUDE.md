@@ -19,8 +19,9 @@ This is a Quilltap plugin that integrates Eternal AI's image generation service.
 
 - **index.ts** - Plugin entry point exporting metadata, configuration, capabilities, and factory methods
 - **image-provider.ts** - `EternalAIImageProvider` class implementing async image generation with polling
-- **icon.tsx** - React SVG icon component
 - **types.ts** - Re-exports from Quilltap packages
+
+Note: Icons are now provided as raw SVG data via the `icon` property (no React required).
 
 ### Image Generation Flow
 
@@ -32,7 +33,19 @@ This is a Quilltap plugin that integrates Eternal AI's image generation service.
 
 ### Style System
 
-The plugin maps style names to Eternal AI LoRA (Low-Rank Adaptation) identifiers in `normalizeStyle()`. Supported styles: impressionist, painterly, anime, mechanical, random.
+The plugin maps style names to Eternal AI LoRA (Low-Rank Adaptation) identifiers in `normalizeStyle()`.
+
+| Style | LoRA ID | Trigger Phrase |
+|-------|---------|----------------|
+| impressionist | `Art_style_Impressionist` | None required |
+| painterly | `FLUX-daubrez-DB4RZ` | "DB4RZ Daubrez style painting of" |
+| anime | `psycho_art` | "Psycho_4rt anime" |
+| mechanical | `Flux_1_MechanicalBloom` | "CynthiaPortrait:" prefix |
+| random | `RM_Artistify_v1_0M` | None required |
+
+### Prompting Guidance
+
+The plugin provides `promptingGuidance` and `styleInfo` in `getImageProviderConstraints()` for future Quilttap integration. See `docs/QUILTTAP_FEATURE_REQUEST.md` for the proposed extension to `@quilttap/plugin-types`.
 
 ### Plugin Capabilities
 

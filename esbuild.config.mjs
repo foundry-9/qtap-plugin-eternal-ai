@@ -8,6 +8,6 @@ esbuild.build({
   target: 'es2020',
   format: 'cjs',
   sourcemap: true,
-  external: ['react', '@quilltap/plugin-types', '@quilltap/plugin-utils'],
+  external: ['@quilltap/plugin-types', '@quilltap/plugin-utils'],
   logLevel: 'info',
 }).catch(() => process.exit(1));
