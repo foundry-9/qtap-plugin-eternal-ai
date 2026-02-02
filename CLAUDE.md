@@ -45,7 +45,7 @@ The plugin maps style names to Eternal AI LoRA (Low-Rank Adaptation) identifiers
 
 ### Prompting Guidance
 
-The plugin provides `promptingGuidance` and `styleInfo` in `getImageProviderConstraints()` for future Quilttap integration. See `docs/QUILTTAP_FEATURE_REQUEST.md` for the proposed extension to `@quilttap/plugin-types`.
+The plugin provides `promptingGuidance` and `styleInfo` in `getImageProviderConstraints()`. Quilltap uses this data to help LLMs craft better image prompts, including automatic trigger phrase injection when a style is selected.
 
 ### Plugin Capabilities
 
