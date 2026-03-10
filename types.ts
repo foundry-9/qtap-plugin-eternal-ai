@@ -20,6 +20,7 @@ export type {
   ProviderConfigRequirements,
   ModelInfo,
   ImageProviderConstraints,
+  ImageGenerationModelInfo,
   UniversalTool,
   ToolFormatOptions,
   ToolCallRequest,

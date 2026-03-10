@@ -1,4 +1,4 @@
-import type { LLMProviderPlugin } from './types';
+import type { LLMProviderPlugin, ImageGenerationModelInfo } from './types';
 import { EternalAIImageProvider } from './image-provider';
 
 const metadata = {
@@ -62,19 +62,52 @@ export const plugin: LLMProviderPlugin = {
     return provider.validateApiKey(apiKey);
   },
 
+  getImageGenerationModels: (): ImageGenerationModelInfo[] => {
+    const baseModels = [
+      { id: 'black-forest-labs/FLUX.1-dev', shortName: 'FLUX.1-dev' },
+      { id: 'black-forest-labs/FLUX.1-schnell', shortName: 'FLUX.1-schnell' },
+    ];
+
+    const styles = [
+      { key: 'impressionist', name: 'Impressionist' },
+      { key: 'painterly', name: 'Daubrez Painterly' },
+      { key: 'anime', name: 'Psycho Art Anime' },
+      { key: 'mechanical', name: 'Mechanical Bloom' },
+      { key: 'random', name: 'RandomMaxx Artistify' },
+    ];
+
+    const sizes = ['1024x1024', '1024x768', '768x1024'];
+    const models: ImageGenerationModelInfo[] = [];
+
+    for (const base of baseModels) {
+      // Base model without a style
+      models.push({
+        id: base.id,
+        name: `${base.shortName} (No Style)`,
+        supportedSizes: sizes,
+        description: `${base.shortName} base model without LoRA styling`,
+      });
+
+      // Base model + each style
+      for (const style of styles) {
+        models.push({
+          id: `${base.id}/${style.key}`,
+          name: `${base.shortName} + ${style.name}`,
+          supportedSizes: sizes,
+          description: `${base.shortName} with ${style.name} LoRA style`,
+        });
+      }
+    }
+
+    return models;
+  },
+
   getImageProviderConstraints: () => ({
     maxPromptBytes: 4000,
     promptConstraintWarning:
       'Prompts are limited to 4000 bytes for best results',
     maxImagesPerRequest: 1,
-    supportedSizes: ['1024x1024', '512x512', '768x768'],
-    supportedStyles: [
-      'impressionist',
-      'painterly',
-      'anime',
-      'mechanical',
-      'random',
-    ],
+    supportedSizes: ['1024x1024', '1024x768', '768x1024'],
 
     // Extended fields for prompting guidance (proposed extension to ImageProviderConstraints)
     promptingGuidance: `# Eternal AI Image Prompting Guide
@@ -93,14 +126,14 @@ Primary subject → Main activity → Defining style → Core context → Suppor
 - Standard (30-80 words): Optimal for most creative work
 - Detailed (80+ words): Intricate scenes with specific requirements
 
-## Available Styles (LoRAs)
-When a style is selected, include its trigger phrase in the prompt:
+## Styles (via Model Selection)
+Styles are selected by choosing a model variant. When a styled model is active, include its trigger phrase in the prompt for best results:
 
-- **impressionist**: Classic impressionist painting style
+- **impressionist**: Classic impressionist painting style (no trigger phrase needed)
 - **painterly**: Include "DB4RZ Daubrez style" in prompt for Daubrez painterly aesthetic
 - **anime**: Include "Psycho_4rt" in prompt for anime/glitch art style
 - **mechanical**: Include "CynthiaPortrait:" prefix for mechanical floral/cyberpunk portraits
-- **random**: Artistify style for surreal dreamlike elements
+- **random**: Artistify style for surreal dreamlike elements (no trigger phrase needed)
 
 ## Approach by Focus Type
 
